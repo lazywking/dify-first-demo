@@ -1,0 +1,706 @@
+app:
+  description: 用于企业经营分析报告的生成
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: 企业经营分析
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/ollama:0.0.3@9ded90ac00e8510119a24be7396ba77191c9610d5e1e29f59d68fa1229822fc7
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/xinference:0.0.3@2f59f67f45ca4f626aaeef0d9c656cc0e38ab9fbf2c9b4673e3e20162eed9e4f
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1745384923228-source-llm-target
+      source: '1745384923228'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1745372530859-source-1745385774081-target
+      source: '1745372530859'
+      sourceHandle: source
+      target: '1745385774081'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: knowledge-retrieval
+      id: 1745385774081-source-1745384923228-target
+      source: '1745385774081'
+      sourceHandle: source
+      target: '1745384923228'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: http-request
+      id: llm-source-1745395919838-target
+      source: llm
+      sourceHandle: source
+      target: '1745395919838'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: answer
+      id: 1745558830465-source-answer-target
+      source: '1745558830465'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: parameter-extractor
+      id: 1745395919838-source-1745558871751-target
+      source: '1745395919838'
+      sourceHandle: source
+      target: '1745558871751'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: parameter-extractor
+        targetType: http-request
+      id: 1745558871751-source-1745558830465-target
+      source: '1745558871751'
+      sourceHandle: source
+      target: '1745558830465'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: llm-source-1745911646874-target
+      source: llm
+      sourceHandle: source
+      target: '1745911646874'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: answer
+      id: 1745911646874-source-1745911814263-target
+      source: '1745911646874'
+      sourceHandle: source
+      target: '1745911814263'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables: []
+      height: 54
+      id: '1745372530859'
+      position:
+        x: 43
+        y: 129
+      positionAbsolute:
+        x: 43
+        y: 129
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1745384923228'
+          - result
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: true
+            size: 10
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: 17c74b78-c052-4098-9224-b4e89402be2b
+          role: system
+          text: "# Role: 资深经营分析师 AI\n\n# Context / Input Data Types (供你理解可能的信息来源):\n\
+            {{#context#}}\n  - 财务数据：如收入、成本、毛利率、净利率、现金流等（可能包含时间序列数据）\n  - 市场数据：如销售量、销售额、客户数量、新客户、复购率、市场份额、NPS\
+            \ 等（可能分区域、产品、渠道）\n  - 运营数据：库存水平、周转天数、供应链效率、生产指标等\n  - 外部环境：行业增长率、主要竞争对手表现、政策法规变化、宏观经济指标等\n\
+            \  - 定性洞察：管理层观点、客户反馈摘要、员工满意度调查关键点等\n\n# User Input:\n\n\n**任务要求 (Task\
+            \ Requirements)**：\n1.  基于用户提供的 {{#sys.query#}}和你的背景知识，生成一份结构化的经营分析报告。\n\
+            2.  报告内容应至少包含以下部分（根据实际数据和分析需要调整）：\n    *   **摘要 (Summary):** 关键业绩指标 (KPIs)\
+            \ 概览、核心发现和主要结论。\n    *   **财务分析 (Financial Analysis):** 分析收入、利润、成本、关键财务比率等，**必须包含趋势分析**（如同比、环比增长）。\n\
+            \    *   **市场与销售分析 (Market & Sales Analysis):** 分析销售表现（按区域/产品/渠道）、客户行为（NPS、复购、投诉）、市场份额（如果信息可用）等。\n\
+            \    *   **运营分析 (Operational Analysis):** （如果数据可用）分析库存、供应链等运营效率指标。\n \
+            \   *   **外部环境与风险分析 (External Environment & Risk Analysis):** 分析行业趋势、竞争格局、政策影响、宏观经济因素以及识别潜在风险。\n\
+            \    *   **定性洞察 (Qualitative Insights):** （如果信息可用）整合管理层、客户、员工的关键反馈或观点。\n\
+            \    *   **结论与建议 (Conclusion & Recommendations):** 基于以上分析，提出具体的、可行的改进建议或战略方向。\n\
+            3.  **识别报告中适合通过图表可视化的关键数据点**，例如：\n    *   时间序列趋势（如收入/利润随时间变化） -> **折线图\
+            \ (line)**\n    *   构成或占比（如区域/产品销售额占比） -> **饼图 (pie)**\n    *   分类比较（如不同产品线的销售额、公司与行业增长率对比）\
+            \ -> **柱状图 (bar)**\n4.  **为每个需要生成的图表，输出结构化的数据对象**。此对象应包含：\n    *   `chart_id`:\
+            \ 一个独特的标识符（例如 \"income_trend_q1_2024\"）。\n    *   `title`: 图表的标题（例如 \"\
+            2024年Q1收入趋势\"）。\n    *   `type`: 图表类型 ('line', 'bar', 'pie')。\n    * \
+            \  `data`: 包含图表所需的数据，结构如下：\n        *   `labels`: 一个包含类目标签或时间点的数组 (e.g.,\
+            \ `[\"2023 Q4\", \"2024 Q1\"]`)。\n        *   `datasets`: 一个包含一个或多个数据集对象的数组。每个数据集对象应包含：\n\
+            \            *   `label`: 数据系列的名称 (e.g., \"收入(万元)\")。\n            * \
+            \  `values`: 与 `labels` 对应的数值数组 (e.g., `[4800, 5000]`)。\n            *\
+            \   (对于饼图，通常只有一个 dataset，values 直接对应 labels 的占比或数值)。\n5.  在报告的 Markdown\
+            \ 文本部分的适当位置，使用 `[CHART: chart_id]` 格式**插入图表占位符**，指明该图表应在文本的哪个位置展示。`chart_id`\
+            \ 必须与下面 `charts` 数组中定义的图表 ID 相对应。\n6.  报告语言应专业、客观、简洁，重点突出数据驱动的洞察 (Insights)\
+            \ 而非简单罗列数据。\n7.  **输出格式**：\n- Markdown 格式\n- 每部分以二级标题（##）分隔\n- 图表数据：如果分析所需关键数据在缺失，应在报告文本中标注“（数据缺失，建议补充）”，并且**不要**为缺失数据生成图表数据。\n\
+            - 需要生成图表数据的必须严格按照下面的 JSON 结构输出。** 输出内容是一个 JSON 对象，包含顶级键：`charts`。\n\n\
+            ```json\n\n{  \n  \"charts\": [\n    // 这里是一个包含所有图表数据对象的数组\n    {\n  \
+            \    \"chart_id\": \"...\",\n      \"title\": \"...\",\n      \"type\"\
+            : \"...\", // 'line', 'bar', 'pie'\n      \"data\": {\n        \"labels\"\
+            : [...],\n        \"datasets\": [\n          { \"label\": \"...\", \"\
+            values\": [...] },\n          // 可能有更多 datasets (例如，对比柱状图)\n        ]\n\
+            \      }\n    },\n    // ... 其他图表对象\n  ]\n}\n```\n\n**示例输出**：\n```markdown\n\
+            # ABC 零售公司 2024 Q1 经营分析报告\n\n## 摘要\n- 收入 5000 万元，同比增长 13.6%。\n- 华东地区销售占比\
+            \ 50%，复购率 70%。\n- 行业增长率 5%，受新税收政策影响。\n\n## 财务分析\n- 收入：5000 万元，毛利率 30%，净利率\
+            \ 10%。\n- 趋势：2023 Q4 收入 4800 万元，增长稳定。\n- 折线图展示收入趋势：\n```json\n{  \n  \"\
+            charts\": [  \n    {\n      \"chart_id\": \"...\",\n      \"title\": \"\
+            收入趋势\",\n      \"type\": \"line\", \n      \"data\": {\n        \"labels\"\
+            : [...],\n        \"datasets\": [\n          { \"label\": \"...\", \"\
+            values\": [...] },          \n        ]\n      }\n    },   \n  ]\n}\n\
+            ```\n\n## 市场分析\n- 销售：服装线上销售 2000 万元，NPS 60。\n- 客户行为：物流延迟导致投诉增加。\n- 饼图展示地区销售占比：\n\
+            ```json\n{  \n  \"charts\": [  \n    {\n      \"chart_id\": \"...\",\n\
+            \      \"title\": \"地区销售占比\",\n      \"type\": \"pie\", \n      \"data\"\
+            : {\n        \"labels\": [...],\n        \"datasets\": [\n          {\
+            \ \"label\": \"...\", \"values\": [...] },          \n        ]\n    \
+            \  }\n    },   \n  ]\n}\n```\n\n## 外部环境分析\n- 行业：零售行业增长率 5%，市场规模 5000 亿元。\n\
+            - 政策：新电商税收政策增加成本。\n- 柱状图对比行业增长率：\n```json\n{  \n  \"charts\": [  \n  \
+            \  {\n      \"chart_id\": \"...\",\n      \"title\": \"行业增长率\",\n    \
+            \  \"type\": \"bar\", \n      \"data\": {\n        \"labels\": [...],\n\
+            \        \"datasets\": [\n          { \"label\": \"...\", \"values\":\
+            \ [...] },          \n        ]\n      }\n    },   \n  ]\n}\n```\n\n##\
+            \ 建议\n- 优化物流流程，降低投诉率。\n- 增加华东地区营销投入。"
+        - id: 3b74f39c-7dd7-4096-a8e2-fc823b8d04be
+          role: user
+          text: '**用户需求**：{{#sys.query#}}
+
+
+            '
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 943
+        y: 129
+      positionAbsolute:
+        x: 943
+        y: 129
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1745558830465.files#}}'
+        desc: ''
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 105
+      id: answer
+      position:
+        x: 2449.151877138229
+        y: 510.79375916383816
+      positionAbsolute:
+        x: 2449.151877138229
+        y: 510.79375916383816
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        dataset_ids:
+        - 10e5e7b3-38da-4f5e-b2d8-f2b5434e4ae4
+        - 192055fd-5b77-4c4c-bc66-f3af5c4b0727
+        - 518f28c9-34ae-4454-8738-e52b50c123c5
+        - effef781-1d2b-46e5-9f7a-a8d74c200ac2
+        - b285d47f-dfcb-46ed-a187-757fa5196405
+        desc: ''
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: bge-reranker-large
+            provider: langgenius/xinference/xinference
+          top_k: 4
+        query_variable_selector:
+        - '1745385774081'
+        - text
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 204
+      id: '1745384923228'
+      position:
+        x: 659
+        y: 351
+      positionAbsolute:
+        x: 659
+        y: 351
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: d3164bd5-72d2-45e4-bee1-92f9040b50a5
+          role: system
+          text: "你是一个经营分析专家，任务是根据用户需求，分析出需要从财务知识库，市场知识库，运营知识库，外部环境知识库，定性反馈知识库等知识库中检索哪些关键信息，作为检索的查询输入。\n\
+            \r"
+        - id: f4388a4e-bdf4-4167-a971-d0b7e81f2ad3
+          role: user
+          text: '
+
+            {{#sys.query#}}'
+        selected: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1745385774081'
+      position:
+        x: 359
+        y: 351
+      positionAbsolute:
+        x: 359
+        y: 351
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-737
+            key: ''
+            type: text
+            value: '{{#llm.text#}}'
+          type: raw-text
+        desc: ''
+        headers: ''
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTP 请求
+        type: http-request
+        url: http://192.168.2.43:8088/office/pdf
+        variables: []
+      height: 136
+      id: '1745395919838'
+      position:
+        x: 1244.8022915648462
+        y: 535.576060503445
+      positionAbsolute:
+        x: 1244.8022915648462
+        y: 535.576060503445
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        desc: ''
+        headers: ''
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTP 请求 2
+        type: http-request
+        url: '{{#1745558871751.download_url#}}'
+        variables: []
+      height: 123
+      id: '1745558830465'
+      position:
+        x: 2078.8252072133087
+        y: 519.5845929044531
+      positionAbsolute:
+        x: 2078.8252072133087
+        y: 519.5845929044531
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        instruction: "#role\n你是一个字符串内容分析专家，从输入内容中提取出完整的download_url地址内容\n\n#示例\n输入内容：\n\
+          {\n  \"message\": \"PDF created successfully\",\n  \"download_url\": \"\
+          http://your_server_ip:8088/download/report/report_a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf\"\
+          ,\n  \"filename\": \"report_a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf\"\n\
+          }\n\n提取出的内容：\nhttp://your_server_ip:8088/download/report/report_a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf\n"
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        parameters:
+        - description: pdf文件的URI地址
+          name: download_url
+          required: false
+          type: string
+        query:
+        - '1745395919838'
+        - body
+        reasoning_mode: prompt
+        selected: false
+        title: 参数提取器
+        type: parameter-extractor
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1745558871751'
+      position:
+        x: 1682.3997414076694
+        y: 477.70413340209103
+      positionAbsolute:
+        x: 1682.3997414076694
+        y: 477.70413340209103
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\nimport re\n\n# --- Helper Function to Generate ECharts\
+          \ Config from a single chart definition ---\n# (保持 generate_single_echarts_config\
+          \ 函數不變)\ndef generate_single_echarts_config(chart: dict) -> dict:\n    \"\
+          \"\"\n    Takes a single chart definition dictionary and returns the\n \
+          \   corresponding ECharts configuration dictionary.\n    Raises ValueError\
+          \ or other exceptions if generation fails.\n    \"\"\"\n    chart_id = chart.get('chart_id')\n\
+          \    title = chart.get('title', 'Untitled Chart')\n    chart_type = chart.get('type')\n\
+          \    chart_data = chart.get('data') # Should be like {\"labels\": [], \"\
+          datasets\": []} or similar\n\n    # Validate essential fields\n    if not\
+          \ isinstance(chart, dict): raise ValueError(\"Input chart is not a dictionary.\"\
+          )\n    if not isinstance(chart_data, dict): raise ValueError(f\"Chart 'data'\
+          \ field is missing or not a dictionary for chart_id '{chart_id}'.\")\n \
+          \   if not all([chart_id, chart_type]): raise ValueError(f\"Chart definition\
+          \ missing required fields (chart_id, type) for chart_id '{chart_id}'.\"\
+          )\n\n    colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',\
+          \ '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc']\n    echarts_config = {\n\
+          \        \"color\": colors,\n        \"title\": {\"text\": title, \"left\"\
+          : \"center\", \"textStyle\": {\"fontSize\": 16}},\n        \"tooltip\":\
+          \ {\"trigger\": \"item\" if chart_type == \"pie\" else \"axis\"},\n    \
+          \    \"legend\": { \"show\": True, \"type\": \"scroll\", \"orient\": \"\
+          horizontal\", \"left\": \"center\", \"bottom\": 5 },\n        \"grid\":\
+          \ { \"left\": '3%', \"right\": '4%', \"bottom\": '10%', \"containLabel\"\
+          : True }\n    }\n\n    # --- Chart Type Specific Logic ---\n    if chart_type\
+          \ == \"line\":\n        labels = chart_data.get('labels', []); datasets\
+          \ = chart_data.get('datasets', [])\n        if not isinstance(labels, list)\
+          \ or not isinstance(datasets, list): raise ValueError(\"'labels'/'datasets'\
+          \ must be lists\")\n        if not labels or not datasets: raise ValueError(\"\
+          Missing 'labels' or 'datasets'\")\n        echarts_config[\"xAxis\"] = {\"\
+          type\": \"category\", \"boundaryGap\": False, \"data\": labels}; echarts_config[\"\
+          yAxis\"] = {\"type\": \"value\"}\n        legend_data = [ds.get('label',\
+          \ f'S{i+1}') for i, ds in enumerate(datasets) if isinstance(ds, dict)]\n\
+          \        echarts_config[\"legend\"][\"data\"] = legend_data\n        echarts_config[\"\
+          series\"] = []\n        for i, ds in enumerate(datasets):\n            if\
+          \ not isinstance(ds, dict): continue\n            echarts_config[\"series\"\
+          ].append({\"name\": ds.get('label', f'S{i+1}'), \"type\": \"line\", \"stack\"\
+          : None, \"smooth\": True, \"data\": ds.get('values', []) if isinstance(ds.get('values'),\
+          \ list) else [] })\n    elif chart_type == \"pie\":\n        labels = chart_data.get('labels',\
+          \ []); values = []\n        pie_datasets = chart_data.get('datasets', [])\n\
+          \        if 'values' in chart_data and isinstance(chart_data['values'],\
+          \ list): values = chart_data['values']\n        elif isinstance(pie_datasets,\
+          \ list) and len(pie_datasets) > 0 and isinstance(pie_datasets[0], dict):\n\
+          \            if 'values' in pie_datasets[0] and isinstance(pie_datasets[0]['values'],\
+          \ list): values = pie_datasets[0]['values']\n            # --- CORRECTION:\
+          \ Check for mismatched labels/values AFTER getting values ---\n        \
+          \    # else: raise ValueError(\"Pie 'datasets' missing 'values' list\")\
+          \ # Defer this check\n        # Check labels type after potential value\
+          \ assignment\n        if not isinstance(labels, list): raise ValueError(\"\
+          'labels' must be list\");\n        # Check if values were successfully extracted\
+          \ before checking length\n        if not values: raise ValueError(\"No 'values'\
+          \ found for pie chart\");\n        if len(labels) != len(values): raise\
+          \ ValueError(f\"Label/Value mismatch: {len(labels)}!={len(values)}\")\n\n\
+          \        echarts_config[\"tooltip\"][\"formatter\"] = \"{b} : {c} ({d}%)\"\
+          \n        echarts_config[\"legend\"][\"orient\"] = \"vertical\"; echarts_config[\"\
+          legend\"][\"left\"] = \"right\"; echarts_config[\"legend\"][\"top\"] = \"\
+          center\"\n        echarts_config[\"legend\"][\"data\"] = labels\n      \
+          \  echarts_config.pop(\"grid\", None)\n        echarts_config[\"series\"\
+          ] = [{\"name\": title, \"type\": \"pie\", \"radius\": ['40%', '70%'], \"\
+          avoidLabelOverlap\": False, \"itemStyle\": {\"borderRadius\": 10, \"borderColor\"\
+          : '#fff', \"borderWidth\": 2},\"label\": {\"show\": False, \"position\"\
+          : 'center'},\"emphasis\": {\"label\": {\"show\": True, \"fontSize\": 20,\
+          \ \"fontWeight\": 'bold'}},\"labelLine\": {\"show\": False},\"data\": [{\"\
+          value\": val, \"name\": label} for label, val in zip(labels, values)]}]\n\
+          \    elif chart_type == \"bar\":\n        labels = chart_data.get('labels',\
+          \ []); datasets = chart_data.get('datasets', [])\n        if not isinstance(labels,\
+          \ list) or not isinstance(datasets, list): raise ValueError(\"'labels'/'datasets'\
+          \ must be lists\")\n        if not labels or not datasets: raise ValueError(\"\
+          Missing 'labels'/'datasets'\")\n        echarts_config[\"xAxis\"] = {\"\
+          type\": \"category\", \"data\": labels}; echarts_config[\"yAxis\"] = {\"\
+          type\": \"value\"}\n        legend_data = [ds.get('label', f'S{i+1}') for\
+          \ i, ds in enumerate(datasets) if isinstance(ds, dict)]\n        echarts_config[\"\
+          legend\"][\"data\"] = legend_data\n        echarts_config[\"series\"] =\
+          \ []\n        for i, ds in enumerate(datasets):\n             if not isinstance(ds,\
+          \ dict): continue\n             echarts_config[\"series\"].append({\"name\"\
+          : ds.get('label', f'S{i+1}'), \"type\": \"bar\", \"barWidth\": \"60%\",\
+          \ \"data\": ds.get('values', []) if isinstance(ds.get('values'), list) else\
+          \ [] })\n    else:\n        raise ValueError(f\"Unsupported chart type:\
+          \ '{chart_type}' for chart_id '{chart_id}'\")\n\n    return echarts_config\n\
+          \n\n# --- Main Function ---\ndef main(markdown_text: str) -> dict:\n   \
+          \ \"\"\"\n    Extracts markdown content after '</think>', finds all JSON\
+          \ blocks\n    within ```json ... ```, generates corresponding ECharts blocks,\n\
+          \    and replaces the JSON blocks with ECharts blocks in the original markdown.\n\
+          \    Attempts to clean trailing commas from JSON before parsing.\n    \"\
+          \"\"\n    processing_errors = [] # Collect all errors here\n\n    # 1. Extract\
+          \ content after </think> (if present)\n    think_pattern = r'</think>\\\
+          s*(.*)'\n    match_think = re.search(think_pattern, markdown_text, re.DOTALL\
+          \ | re.IGNORECASE)\n    if match_think:\n        markdown_content = match_think.group(1).strip()\n\
+          \        print(\"已提取 </think> 之后的内容。\")\n    else:\n        print(\"未找到\
+          \ </think> 标签，将使用全部内容作为 Markdown。\")\n        markdown_content = markdown_text.strip()\n\
+          \n    # 2. Clean potential ```markdown fences (optional)\n    markdown_content\
+          \ = re.sub(r'^\\s*```markdown\\s*\\n?', '', markdown_content, flags=re.IGNORECASE)\n\
+          \    markdown_content = re.sub(r'\\n?\\s*```\\s*$', '', markdown_content)\n\
+          \    markdown_content = markdown_content.strip()\n\n    # 3. Define the\
+          \ replacement function for re.sub\n    def replace_json_with_echarts(match):\n\
+          \        \"\"\"\n        This function is called by re.sub for each ```json```\
+          \ block found.\n        It attempts to parse the JSON, generate ECharts\
+          \ config, and return\n        the ```echarts``` block string. Returns original\
+          \ block on error.\n        \"\"\"\n        original_block = match.group(0)\
+          \ # The entire matched string ```json ... ```\n        json_content_str\
+          \ = match.group(1).strip() # Content inside the block\n\n        if not\
+          \ json_content_str:\n            print(f\"Warning: Skipping empty JSON block\
+          \ content.\")\n            processing_errors.append({\"type\": \"EmptyBlock\"\
+          , \"original\": original_block})\n            return original_block\n\n\
+          \        try:\n            # --- ADD JSON CLEANING STEP ---\n          \
+          \  # Remove trailing commas before closing brackets and braces\n       \
+          \     cleaned_json_str = re.sub(r',\\s*([\\]}])', r'\\1', json_content_str)\n\
+          \            # --- END CLEANING STEP ---\n\n            # Parse the CLEANED\
+          \ JSON content\n            json_data = json.loads(cleaned_json_str) # Use\
+          \ cleaned_json_str\n\n            if not isinstance(json_data, dict) or\
+          \ 'charts' not in json_data or not isinstance(json_data['charts'], list)\
+          \ or not json_data['charts']:\n                 raise ValueError(\"JSON\
+          \ content does not have the expected '{\\\"charts\\\": [ ... ]}' structure\
+          \ or 'charts' list is empty.\")\n\n            chart_definition = json_data['charts'][0]\
+          \ # Assume first chart in block\n            if not isinstance(chart_definition,\
+          \ dict):\n                 raise ValueError(\"First item in 'charts' list\
+          \ is not a dictionary.\")\n\n            echarts_config = generate_single_echarts_config(chart_definition)\
+          \ # Generate config\n\n            echarts_output_string = \"```echarts\\\
+          n\" + json.dumps(echarts_config, indent=2, ensure_ascii=False) + \"\\n```\"\
+          \ # Format output\n            print(f\"Successfully converted JSON block\
+          \ for chart_id: {chart_definition.get('chart_id', 'N/A')}\")\n         \
+          \   return echarts_output_string # Return the new ECharts block\n\n    \
+          \    except json.JSONDecodeError as json_e:\n            error_msg = f\"\
+          JSON Decode Error: {str(json_e)}\"\n            # Log the *original* problematic\
+          \ string for easier debugging\n            print(f\"Warning: {error_msg}\
+          \ in original block content:\\n{json_content_str[:200]}...\")\n        \
+          \    processing_errors.append({\"type\": \"JSONDecodeError\", \"error\"\
+          : error_msg, \"content\": json_content_str})\n            return original_block\
+          \ # Return original block\n        except (ValueError, KeyError, TypeError,\
+          \ IndexError) as gen_e:\n            error_msg = f\"ECharts Generation Error:\
+          \ {str(gen_e)}\"\n            chart_id_for_error = 'unknown'\n         \
+          \   if 'chart_definition' in locals() and isinstance(chart_definition, dict):\n\
+          \                chart_id_for_error = chart_definition.get('chart_id', 'unknown')\n\
+          \            print(f\"Warning: {error_msg} for chart_id '{chart_id_for_error}'\
+          \ in block:\\n{original_block[:200]}...\")\n            processing_errors.append({\"\
+          type\": \"GenerationError\", \"error\": error_msg, \"chart_data\": chart_definition\
+          \ if 'chart_definition' in locals() else json_content_str})\n          \
+          \  return original_block # Return original block\n        except Exception\
+          \ as e:\n            error_msg = f\"Unexpected Error: {str(e)}\"\n     \
+          \       print(f\"Warning: {error_msg} processing block:\\n{original_block[:200]}...\"\
+          )\n            processing_errors.append({\"type\": \"UnexpectedError\",\
+          \ \"error\": error_msg, \"content\": json_content_str})\n            return\
+          \ original_block # Return original block\n\n    # 4. Perform the replacement\
+          \ using re.sub\n    json_block_pattern = r'```json\\n(.*?)\\n```'\n    modified_markdown_string\
+          \ = re.sub(\n        json_block_pattern,\n        replace_json_with_echarts,\n\
+          \        markdown_content,\n        flags=re.DOTALL\n    )\n\n    # 5. Prepare\
+          \ the final result string (including errors if any)\n    final_result_string\
+          \ = modified_markdown_string\n    if processing_errors:\n        final_result_string\
+          \ += \"\\n\\n---\\n**Processing Errors Encountered:**\\n```json\\n\" + json.dumps(processing_errors,\
+          \ ensure_ascii=False, indent=2) + \"\\n```\"\n\n    # 6. Return the result\n\
+          \    return {\n        \"result\": final_result_string\n    }"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行
+        type: code
+        variables:
+        - value_selector:
+          - llm
+          - text
+          variable: markdown_text
+      height: 54
+      id: '1745911646874'
+      position:
+        x: 1424.9726123263542
+        y: -133.18470929516144
+      positionAbsolute:
+        x: 1424.9726123263542
+        y: -133.18470929516144
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1745911646874.result#}}'
+        desc: ''
+        selected: false
+        title: 直接回复 2
+        type: answer
+        variables: []
+      height: 105
+      id: '1745911814263'
+      position:
+        x: 1895.9984533980396
+        y: -238.67471418254178
+      positionAbsolute:
+        x: 1895.9984533980396
+        y: -238.67471418254178
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 122.80594740925221
+      y: 311.59467450456305
+      zoom: 0.37267759669973016
