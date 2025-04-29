@@ -1,0 +1,596 @@
+app:
+  description: 用于企业经营分析报告的生成
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: 企业经营分析Echart
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/ollama:0.0.3@9ded90ac00e8510119a24be7396ba77191c9610d5e1e29f59d68fa1229822fc7
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/xinference:0.0.3@2f59f67f45ca4f626aaeef0d9c656cc0e38ab9fbf2c9b4673e3e20162eed9e4f
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1745384923228-source-llm-target
+      source: '1745384923228'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1745372530859-source-1745385774081-target
+      source: '1745372530859'
+      sourceHandle: source
+      target: '1745385774081'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: knowledge-retrieval
+      id: 1745385774081-source-1745384923228-target
+      source: '1745385774081'
+      sourceHandle: source
+      target: '1745384923228'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: llm-source-1745823859913-target
+      source: llm
+      sourceHandle: source
+      target: '1745823859913'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: code
+      id: 1745823859913-source-1745819871323-target
+      source: '1745823859913'
+      sourceHandle: source
+      target: '1745819871323'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: answer
+      id: 1745819871323-source-1745895911042-target
+      source: '1745819871323'
+      sourceHandle: source
+      target: '1745895911042'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables: []
+      height: 54
+      id: '1745372530859'
+      position:
+        x: 43
+        y: 129
+      positionAbsolute:
+        x: 43
+        y: 129
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1745384923228'
+          - result
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: true
+            size: 10
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: 17c74b78-c052-4098-9224-b4e89402be2b
+          role: system
+          text: "# Role: 资深经营分析师 AI\n\n# Context / Input Data Types (供你理解可能的信息来源):\n\
+            {{#context#}}\n  - 财务数据：如收入、成本、毛利率、净利率、现金流等（可能包含时间序列数据）\n  - 市场数据：如销售量、销售额、客户数量、新客户、复购率、市场份额、NPS\
+            \ 等（可能分区域、产品、渠道）\n  - 运营数据：库存水平、周转天数、供应链效率、生产指标等\n  - 外部环境：行业增长率、主要竞争对手表现、政策法规变化、宏观经济指标等\n\
+            \  - 定性洞察：管理层观点、客户反馈摘要、员工满意度调查关键点等\n\n# User Input:\n\n\n**任务要求 (Task\
+            \ Requirements)**：\n1.  基于用户提供的 {{#sys.query#}}和你的背景知识，生成一份结构化的经营分析报告。\n\
+            2.  报告内容应至少包含以下部分（根据实际数据和分析需要调整）：\n    *   **摘要 (Summary):** 关键业绩指标 (KPIs)\
+            \ 概览、核心发现和主要结论。\n    *   **财务分析 (Financial Analysis):** 分析收入、利润、成本、关键财务比率等，**必须包含趋势分析**（如同比、环比增长）。\n\
+            \    *   **市场与销售分析 (Market & Sales Analysis):** 分析销售表现（按区域/产品/渠道）、客户行为（NPS、复购、投诉）、市场份额（如果信息可用）等。\n\
+            \    *   **运营分析 (Operational Analysis):** （如果数据可用）分析库存、供应链等运营效率指标。\n \
+            \   *   **外部环境与风险分析 (External Environment & Risk Analysis):** 分析行业趋势、竞争格局、政策影响、宏观经济因素以及识别潜在风险。\n\
+            \    *   **定性洞察 (Qualitative Insights):** （如果信息可用）整合管理层、客户、员工的关键反馈或观点。\n\
+            \    *   **结论与建议 (Conclusion & Recommendations):** 基于以上分析，提出具体的、可行的改进建议或战略方向。\n\
+            3.  **识别报告中适合通过图表可视化的关键数据点**，例如：\n    *   时间序列趋势（如收入/利润随时间变化） -> **折线图\
+            \ (line)**\n    *   构成或占比（如区域/产品销售额占比） -> **饼图 (pie)**\n    *   分类比较（如不同产品线的销售额、公司与行业增长率对比）\
+            \ -> **柱状图 (bar)**\n4.  **为每个需要生成的图表，输出结构化的数据对象**。此对象应包含：\n    *   `chart_id`:\
+            \ 一个独特的标识符（例如 \"income_trend_q1_2024\"）。\n    *   `title`: 图表的标题（例如 \"\
+            2024年Q1收入趋势\"）。\n    *   `type`: 图表类型 ('line', 'bar', 'pie')。\n    * \
+            \  `data`: 包含图表所需的数据，结构如下：\n        *   `labels`: 一个包含类目标签或时间点的数组 (e.g.,\
+            \ `[\"2023 Q4\", \"2024 Q1\"]`)。\n        *   `datasets`: 一个包含一个或多个数据集对象的数组。每个数据集对象应包含：\n\
+            \            *   `label`: 数据系列的名称 (e.g., \"收入(万元)\")。\n            * \
+            \  `values`: 与 `labels` 对应的数值数组 (e.g., `[4800, 5000]`)。\n            *\
+            \   (对于饼图，通常只有一个 dataset，values 直接对应 labels 的占比或数值)。\n5.  在报告的 Markdown\
+            \ 文本部分的适当位置，使用 `[CHART: chart_id]` 格式**插入图表占位符**，指明该图表应在文本的哪个位置展示。`chart_id`\
+            \ 必须与下面 `charts` 数组中定义的图表 ID 相对应。\n6.  报告语言应专业、客观、简洁，重点突出数据驱动的洞察 (Insights)\
+            \ 而非简单罗列数据。\n7.  **输出格式**：\n- Markdown 格式\n- 每部分以二级标题（##）分隔\n- 图表数据：如果分析所需关键数据在缺失，应在报告文本中标注“（数据缺失，建议补充）”，并且**不要**为缺失数据生成图表数据。\n\
+            - 需要生成图表数据的必须严格按照下面的 JSON 结构输出。** 输出内容是一个 JSON 对象，包含顶级键：`charts`。\n\n\
+            ```json\n\n{  \n  \"charts\": [\n    // 这里是一个包含所有图表数据对象的数组\n    {\n  \
+            \    \"chart_id\": \"...\",\n      \"title\": \"...\",\n      \"type\"\
+            : \"...\", // 'line', 'bar', 'pie'\n      \"data\": {\n        \"labels\"\
+            : [...],\n        \"datasets\": [\n          { \"label\": \"...\", \"\
+            values\": [...] },\n          // 可能有更多 datasets (例如，对比柱状图)\n        ]\n\
+            \      }\n    },\n    // ... 其他图表对象\n  ]\n}\n```\n\n**示例输出**：\n```markdown\n\
+            # ABC 零售公司 2024 Q1 经营分析报告\n\n## 摘要\n- 收入 5000 万元，同比增长 13.6%。\n- 华东地区销售占比\
+            \ 50%，复购率 70%。\n- 行业增长率 5%，受新税收政策影响。\n\n## 财务分析\n- 收入：5000 万元，毛利率 30%，净利率\
+            \ 10%。\n- 趋势：2023 Q4 收入 4800 万元，增长稳定。\n- 折线图展示收入趋势：\n```json\n{  \n  \"\
+            charts\": [  \n    {\n      \"chart_id\": \"...\",\n      \"title\": \"\
+            收入趋势\",\n      \"type\": \"line\", \n      \"data\": {\n        \"labels\"\
+            : [...],\n        \"datasets\": [\n          { \"label\": \"...\", \"\
+            values\": [...] },          \n        ]\n      }\n    },   \n  ]\n}\n\
+            ```\n\n## 市场分析\n- 销售：服装线上销售 2000 万元，NPS 60。\n- 客户行为：物流延迟导致投诉增加。\n- 饼图展示地区销售占比：\n\
+            ```json\n{  \n  \"charts\": [  \n    {\n      \"chart_id\": \"...\",\n\
+            \      \"title\": \"地区销售占比\",\n      \"type\": \"pie\", \n      \"data\"\
+            : {\n        \"labels\": [...],\n        \"datasets\": [\n          {\
+            \ \"label\": \"...\", \"values\": [...] },          \n        ]\n    \
+            \  }\n    },   \n  ]\n}\n```\n\n## 外部环境分析\n- 行业：零售行业增长率 5%，市场规模 5000 亿元。\n\
+            - 政策：新电商税收政策增加成本。\n- 柱状图对比行业增长率：\n```json\n{  \n  \"charts\": [  \n  \
+            \  {\n      \"chart_id\": \"...\",\n      \"title\": \"行业增长率\",\n    \
+            \  \"type\": \"bar\", \n      \"data\": {\n        \"labels\": [...],\n\
+            \        \"datasets\": [\n          { \"label\": \"...\", \"values\":\
+            \ [...] },          \n        ]\n      }\n    },   \n  ]\n}\n```\n\n##\
+            \ 建议\n- 优化物流流程，降低投诉率。\n- 增加华东地区营销投入。"
+        - id: 3b74f39c-7dd7-4096-a8e2-fc823b8d04be
+          role: user
+          text: '**用户需求**：{{#sys.query#}}
+
+
+            '
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 943
+        y: 129
+      positionAbsolute:
+        x: 943
+        y: 129
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        dataset_ids:
+        - 10e5e7b3-38da-4f5e-b2d8-f2b5434e4ae4
+        - 192055fd-5b77-4c4c-bc66-f3af5c4b0727
+        - 518f28c9-34ae-4454-8738-e52b50c123c5
+        - effef781-1d2b-46e5-9f7a-a8d74c200ac2
+        - b285d47f-dfcb-46ed-a187-757fa5196405
+        desc: ''
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: bge-reranker-large
+            provider: langgenius/xinference/xinference
+          top_k: 4
+        query_variable_selector:
+        - '1745385774081'
+        - text
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 204
+      id: '1745384923228'
+      position:
+        x: 659
+        y: 351
+      positionAbsolute:
+        x: 659
+        y: 351
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: d3164bd5-72d2-45e4-bee1-92f9040b50a5
+          role: system
+          text: "#角色\n你是一位文字提炼专家\n#任务\n根据经营分析的最终目的，负责把用户查询数据需求进行提炼和总结，提取最核心的关键词或者主题，不需要提供详细的回答或者解释，只需要抓取关键数据查询文字，去掉和数据查询无关的内容，比如生成图片、生成Excel、生成表单等和数据查询无关的内容，只保留提炼查询数据的文字。\n\
+            #输出\n只输出你提炼后的结果，关键词呼叫哦这主题名称，不需要提供其他解释或者附加信息，但是需要包含，比如财务、市场、运营、外部环境、定性反馈这些关键词\n\
+            \n\r"
+        - id: f4388a4e-bdf4-4167-a971-d0b7e81f2ad3
+          role: user
+          text: '用户的查询需求
+
+            {{#sys.query#}}'
+        selected: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1745385774081'
+      position:
+        x: 359
+        y: 351
+      positionAbsolute:
+        x: 359
+        y: 351
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\nimport re # Keep re import\n\ndef main(json_content_strings_input:\
+          \ str) -> dict:\n    \"\"\"\n    Parses an input JSON string (representing\
+          \ a list of blocks, each containing a 'charts' list),\n    converts each\
+          \ individual chart definition found within into an ECharts configuration\
+          \ string\n    wrapped in ```echarts``` markdown, collects these outputs,\
+          \ and returns\n    them concatenated into a single Markdown string under\
+          \ the 'result' key.\n    \"\"\"\n    parsing_errors = []\n    generation_errors\
+          \ = []\n    list_of_data_blocks = []\n\n    # 1. Parse the input string\
+          \ into a Python list of dictionaries\n    try:\n        parsed_input = json.loads(json_content_strings_input)\n\
+          \        if isinstance(parsed_input, list):\n            for i, item in\
+          \ enumerate(parsed_input):\n                if isinstance(item, dict):\n\
+          \                    if 'charts' in item and isinstance(item['charts'],\
+          \ list):\n                         list_of_data_blocks.append(item)\n  \
+          \                  else:\n                         parsing_errors.append({\"\
+          index\": i, \"error\": \"Item is a dict but missing 'charts' key or 'charts'\
+          \ is not a list.\", \"content\": str(item)[:500]})\n                   \
+          \      print(f\"Warning: Item at index {i} is a dict but missing 'charts'\
+          \ list.\")\n                else:\n                     parsing_errors.append({\"\
+          index\": i, \"error\": f\"Item in parsed input list is not a dictionary,\
+          \ but {type(item).__name__}\", \"content\": str(item)[:500]})\n        \
+          \             print(f\"Warning: Item at index {i} in parsed input list is\
+          \ not a dictionary.\")\n        else:\n            parsing_errors.append({\"\
+          index\": -1, \"error\": f\"Input parsed but is not a list, type is {type(parsed_input).__name__}\"\
+          , \"content\": json_content_strings_input[:1000]})\n            print(f\"\
+          Warning: Parsed input is not a list.\")\n\n    except json.JSONDecodeError\
+          \ as e:\n        parsing_errors.append({\"index\": -1, \"error\": f\"Input\
+          \ string is not valid JSON: {str(e)}\", \"content\": json_content_strings_input[:1000]})\n\
+          \        print(f\"Error: Input string could not be parsed as JSON: {e}\"\
+          )\n    except Exception as e:\n        parsing_errors.append({\"index\"\
+          : -1, \"error\": f\"Unexpected error parsing input: {str(e)}\", \"content\"\
+          : json_content_strings_input[:1000]})\n        print(f\"Error: Unexpected\
+          \ error parsing input: {e}\")\n\n    if not list_of_data_blocks and parsing_errors:\n\
+          \         # Return errors as string if significant parsing issues occurred\n\
+          \         return {\n            \"result\": f\"Error during input parsing:\\\
+          n```json\\n{json.dumps(parsing_errors, ensure_ascii=False, indent=2)}\\\
+          n```\",\n            \"parsing_errors\": json.dumps(parsing_errors, ensure_ascii=False,\
+          \ indent=2),\n            \"generation_errors\": json.dumps(generation_errors,\
+          \ ensure_ascii=False, indent=2)\n        }\n\n    # 2. Generate ECharts\
+          \ configurations using the parsed list\n    final_echarts_outputs = [] #\
+          \ Stores dicts {'chart_id': ..., 'output': '```echarts...```'}\n    colors\
+          \ = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452',\
+          \ '#9a60b4', '#ea7ccc']\n\n    for block_index, data_block in enumerate(list_of_data_blocks):\n\
+          \        charts_list = data_block.get('charts', [])\n        for chart_index,\
+          \ chart in enumerate(charts_list):\n            try:\n                chart_id\
+          \ = chart.get('chart_id')\n                title = chart.get('title', 'Untitled\
+          \ Chart')\n                chart_type = chart.get('type')\n            \
+          \    chart_data = chart.get('data')\n\n                if not isinstance(chart,\
+          \ dict): raise ValueError(\"Chart item is not a dictionary.\")\n       \
+          \         if not isinstance(chart_data, dict): raise ValueError(f\"Chart\
+          \ 'data' field is missing or not a dictionary.\")\n                if not\
+          \ all([chart_id, chart_type]): raise ValueError(f\"Chart definition missing\
+          \ required fields (chart_id, type)\")\n\n                # --- ECharts Config\
+          \ Generation Logic (Keep as is) ---\n                echarts_config = {\n\
+          \                    \"color\": colors,\n                    \"title\":\
+          \ {\"text\": title, \"left\": \"center\", \"textStyle\": {\"fontSize\":\
+          \ 16}},\n                    \"tooltip\": {\"trigger\": \"item\" if chart_type\
+          \ == \"pie\" else \"axis\"},\n                    \"legend\": { \"show\"\
+          : True, \"type\": \"scroll\", \"orient\": \"horizontal\", \"left\": \"center\"\
+          , \"bottom\": 5 },\n                    \"grid\": { \"left\": '3%', \"right\"\
+          : '4%', \"bottom\": '10%', \"containLabel\": True }\n                }\n\
+          \n                # Line Chart\n                if chart_type == \"line\"\
+          :\n                    labels = chart_data.get('labels', []); datasets =\
+          \ chart_data.get('datasets', [])\n                    if not isinstance(labels,\
+          \ list) or not isinstance(datasets, list): raise ValueError(\"'labels'/'datasets'\
+          \ must be lists for line chart\")\n                    if not labels or\
+          \ not datasets: raise ValueError(\"Missing 'labels'/'datasets' for line\
+          \ chart\")\n                    echarts_config[\"xAxis\"] = {\"type\": \"\
+          category\", \"boundaryGap\": False, \"data\": labels}; echarts_config[\"\
+          yAxis\"] = {\"type\": \"value\"}\n                    legend_data = [ds.get('label',\
+          \ f'S{i+1}') for i, ds in enumerate(datasets) if isinstance(ds, dict)]\n\
+          \                    echarts_config[\"legend\"][\"data\"] = legend_data\n\
+          \                    echarts_config[\"series\"] = []\n                 \
+          \   for i, ds in enumerate(datasets):\n                        if not isinstance(ds,\
+          \ dict): continue\n                        echarts_config[\"series\"].append({\"\
+          name\": ds.get('label', f'S{i+1}'), \"type\": \"line\", \"stack\": None,\
+          \ \"smooth\": True, \"data\": ds.get('values', []) if isinstance(ds.get('values'),\
+          \ list) else [] })\n                # Pie Chart\n                elif chart_type\
+          \ == \"pie\":\n                    labels = chart_data.get('labels', []);\
+          \ values = []\n                    pie_datasets = chart_data.get('datasets',\
+          \ [])\n                    if 'values' in chart_data and isinstance(chart_data['values'],\
+          \ list): values = chart_data['values']\n                    elif isinstance(pie_datasets,\
+          \ list) and len(pie_datasets) > 0 and isinstance(pie_datasets[0], dict):\n\
+          \                        if 'values' in pie_datasets[0] and isinstance(pie_datasets[0]['values'],\
+          \ list): values = pie_datasets[0]['values']\n                        else:\
+          \ raise ValueError(\"Pie 'datasets' missing 'values' list\")\n         \
+          \           if not isinstance(labels, list): raise ValueError(\"'labels'\
+          \ must be list\");\n                    if not values: raise ValueError(\"\
+          No 'values' found\");\n                    if len(labels) != len(values):\
+          \ raise ValueError(f\"Label/Value mismatch: {len(labels)}!={len(values)}\"\
+          )\n                    echarts_config[\"tooltip\"][\"formatter\"] = \"{b}\
+          \ : {c} ({d}%)\"\n                    echarts_config[\"legend\"][\"orient\"\
+          ] = \"vertical\"; echarts_config[\"legend\"][\"left\"] = \"right\"; echarts_config[\"\
+          legend\"][\"top\"] = \"center\"\n                    echarts_config[\"legend\"\
+          ][\"data\"] = labels\n                    echarts_config.pop(\"grid\", None)\n\
+          \                    echarts_config[\"series\"] = [{\"name\": title, \"\
+          type\": \"pie\", \"radius\": ['40%', '70%'], \"avoidLabelOverlap\": False,\
+          \ \"itemStyle\": {\"borderRadius\": 10, \"borderColor\": '#fff', \"borderWidth\"\
+          : 2},\"label\": {\"show\": False, \"position\": 'center'},\"emphasis\":\
+          \ {\"label\": {\"show\": True, \"fontSize\": 20, \"fontWeight\": 'bold'}},\"\
+          labelLine\": {\"show\": False},\"data\": [{\"value\": val, \"name\": label}\
+          \ for label, val in zip(labels, values)]}]\n                # Bar Chart\n\
+          \                elif chart_type == \"bar\":\n                    labels\
+          \ = chart_data.get('labels', []); datasets = chart_data.get('datasets',\
+          \ [])\n                    if not isinstance(labels, list) or not isinstance(datasets,\
+          \ list): raise ValueError(\"'labels'/'datasets' must be lists for bar chart\"\
+          )\n                    if not labels or not datasets: raise ValueError(\"\
+          Missing 'labels'/'datasets' for bar chart\")\n                    echarts_config[\"\
+          xAxis\"] = {\"type\": \"category\", \"data\": labels}; echarts_config[\"\
+          yAxis\"] = {\"type\": \"value\"}\n                    legend_data = [ds.get('label',\
+          \ f'S{i+1}') for i, ds in enumerate(datasets) if isinstance(ds, dict)]\n\
+          \                    echarts_config[\"legend\"][\"data\"] = legend_data\n\
+          \                    echarts_config[\"series\"] = []\n                 \
+          \   for i, ds in enumerate(datasets):\n                         if not isinstance(ds,\
+          \ dict): continue\n                         echarts_config[\"series\"].append({\"\
+          name\": ds.get('label', f'S{i+1}'), \"type\": \"bar\", \"barWidth\": \"\
+          60%\", \"data\": ds.get('values', []) if isinstance(ds.get('values'), list)\
+          \ else [] })\n                else:\n                    raise ValueError(f\"\
+          Unsupported chart type: '{chart_type}'\")\n                # --- End ECharts\
+          \ Config Generation ---\n\n                output_string = \"```echarts\\\
+          n\" + json.dumps(echarts_config, indent=2, ensure_ascii=False) + \"\\n```\"\
+          \n                final_echarts_outputs.append({\"chart_id\": chart_id,\
+          \ \"output\": output_string}) # Store the dict containing the string\n\n\
+          \            except (ValueError, KeyError, TypeError, IndexError) as e:\n\
+          \                generation_errors.append({\"block_index\": block_index,\
+          \ \"chart_index\": chart_index, \"chart_id\": chart.get('chart_id', 'unknown'),\
+          \ \"error\": f\"Error generating ECharts config: {str(e)}\", \"chart_data\"\
+          : chart })\n                print(f\"Warning: Could not generate ECharts\
+          \ config for chart '{chart.get('chart_id', 'unknown')}' in block {block_index},\
+          \ chart index {chart_index}: {e}\")\n\n    # --- MODIFIED PART: Concatenate\
+          \ outputs into a single string ---\n    # Extract just the 'output' strings\
+          \ (```echarts...```) from the results\n    echarts_markdown_blocks = [item['output']\
+          \ for item in final_echarts_outputs]\n\n    # Join these blocks together\
+          \ with double newlines\n    final_markdown_string = \"\\n\\n\".join(echarts_markdown_blocks)\n\
+          \n    # Optionally, add error information to the final string if needed\
+          \ for debugging\n    if generation_errors:\n        final_markdown_string\
+          \ += \"\\n\\n---\\n**Generation Errors:**\\n```json\\n\" + json.dumps(generation_errors,\
+          \ ensure_ascii=False, indent=2) + \"\\n```\"\n    if parsing_errors:\n \
+          \        final_markdown_string += \"\\n\\n---\\n**Parsing Errors:**\\n```json\\\
+          n\" + json.dumps(parsing_errors, ensure_ascii=False, indent=2) + \"\\n```\"\
+          \n\n    # Return dictionary where the value for \"result\" MUST be the concatenated\
+          \ string\n    return {\n        \"result\": final_markdown_string\n    }"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行 2
+        type: code
+        variables:
+        - value_selector:
+          - '1745823859913'
+          - result
+          variable: json_content_strings_input
+      height: 54
+      id: '1745819871323'
+      position:
+        x: 1630.3293386439177
+        y: 285.90707419604496
+      positionAbsolute:
+        x: 1630.3293386439177
+        y: 285.90707419604496
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\nimport re\n\ndef main(markdown_text: str)-> dict:\n  \
+          \  \"\"\"\n    Extracts markdown content after '</think>', finds all JSON\
+          \ blocks\n    within ```json ... ```, parses them, and returns the parsed\
+          \ data.\n    \"\"\"\n    #markdown_text = markdown_text.decode('utf-8')AttributeError:\
+          \ 'str' object has no attribute 'decode'\n    # --- Extract relevant content\
+          \ after </think> ---\n    # Use a more robust pattern for <think> block\
+          \ removal if needed\n    think_pattern = r'</think>\\s*(.*)'\n    match\
+          \ = re.search(think_pattern, markdown_text, re.DOTALL | re.IGNORECASE)\n\
+          \    if match:\n        markdown_content = match.group(1).strip()\n    \
+          \    print(\"已提取 </think> 之后的内容。\")\n    else:\n        print(\"未找到 </think>\
+          \ 标签，将使用全部内容作为 Markdown。\")\n        markdown_content = markdown_text.strip()\n\
+          \n    # --- Clean potential leading/trailing ```markdown fence ---\n   \
+          \ # Optional: Useful if the input might incorrectly wrap everything\n  \
+          \  markdown_content = re.sub(r'^\\s*```markdown\\s*\\n?', '', markdown_content,\
+          \ flags=re.IGNORECASE)\n    markdown_content = re.sub(r'\\n?\\s*```\\s*$',\
+          \ '', markdown_content)\n    inputmarkdown = markdown_content.strip() #\
+          \ Use this variable for consistency\n\n    # --- Initialize lists ---\n\
+          \    parsed_data_list = []\n    errors = []\n\n    # --- Pattern for JSON\
+          \ blocks (only one capture group needed) ---\n    json_block_pattern = r'```json\\\
+          n(.*?)\\n```'\n\n    # --- Iterate through found JSON blocks and parse ---\n\
+          \    block_index = 0 # Use 0-based index for consistency with lists\n  \
+          \  for match in re.finditer(json_block_pattern, inputmarkdown, re.DOTALL):\n\
+          \        # Group 1 contains the content BETWEEN the delimiters\n       \
+          \ json_content_str = match.group(1).strip() # Get content from group 1\n\
+          \n        try:\n            # Skip if the extracted content is empty after\
+          \ stripping\n            if not json_content_str:\n                print(f\"\
+          Warning: Skipping empty JSON block content at match index {block_index}.\"\
+          )\n                continue\n\n            # Parse the extracted JSON string\n\
+          \            json_data = json.loads(json_content_str)\n            parsed_data_list.append(json_data)\
+          \ # Append the parsed Python object\n\n        except json.JSONDecodeError\
+          \ as json_e:\n            # Handle JSON parsing errors\n            print(f\"\
+          Warning: JSON Decode Error at match index {block_index}: {json_e}\")\n \
+          \           errors.append({\"index\": block_index, \"error\": f\"JSONDecodeError:\
+          \ {str(json_e)}\", \"content\": json_content_str})\n        except Exception\
+          \ as e:\n            # Catch any other unexpected errors during processing\n\
+          \            print(f\"Warning: General Error processing match index {block_index}:\
+          \ {e}\")\n            errors.append({\"index\": block_index, \"error\":\
+          \ f\"General Error: {str(e)}\", \"content\": json_content_str})\n\n    \
+          \    block_index += 1 # Increment index for error reporting\n\n    # ---\
+          \ Return the parsed data (as Python list) and any errors ---\n    # Dify\
+          \ will automatically serialize this dictionary to JSON for output.\n   \
+          \ # Returning the list of objects is generally more useful for downstream\
+          \ nodes\n    # than returning \n    resultstring = json.dumps(parsed_data_list)\n\
+          \    return {\n        \"result\": resultstring,  \n        \n    }"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行
+        type: code
+        variables:
+        - value_selector:
+          - llm
+          - text
+          variable: markdown_text
+      height: 54
+      id: '1745823859913'
+      position:
+        x: 1254.4268732415803
+        y: 351
+      positionAbsolute:
+        x: 1254.4268732415803
+        y: 351
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1745819871323.result#}}'
+        desc: ''
+        selected: false
+        title: 直接回复 2
+        type: answer
+        variables: []
+      height: 105
+      id: '1745895911042'
+      position:
+        x: 1934.3293386439177
+        y: 285.90707419604496
+      positionAbsolute:
+        x: 1934.3293386439177
+        y: 285.90707419604496
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -239.6697666312839
+      y: 302.01821206898654
+      zoom: 0.4550194120404505
