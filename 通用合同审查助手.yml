@@ -1,0 +1,437 @@
+app:
+  description: ''
+  icon: 📖
+  icon_background: '#D1E9FF'
+  mode: workflow
+  name: 通用合同审查助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/ollama:0.0.3@9ded90ac00e8510119a24be7396ba77191c9610d5e1e29f59d68fa1229822fc7
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions: []
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - remote_url
+      - local_file
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 1
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: document-extractor
+        targetType: llm
+      id: 1740449932117-source-1740449990918-target
+      selected: false
+      source: '1740449932117'
+      sourceHandle: source
+      target: '1740449990918'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1740449748004-source-1743587468289-target
+      source: '1740449748004'
+      sourceHandle: source
+      target: '1743587468289'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: document-extractor
+      id: 1743587468289-source-1740449932117-target
+      source: '1743587468289'
+      sourceHandle: source
+      target: '1740449932117'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: tool
+      id: 1740449990918-source-1745993641908-target
+      source: '1740449990918'
+      sourceHandle: source
+      target: '1745993641908'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: code
+      id: 1745993641908-source-1745993987784-target
+      source: '1745993641908'
+      sourceHandle: source
+      target: '1745993987784'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 1745993987784-source-1740550550848-target
+      source: '1745993987784'
+      sourceHandle: source
+      target: '1740550550848'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          label: 请上传需要审查的文本，如为扫描版需OCR后上传
+          max_length: 1
+          options: []
+          required: true
+          type: file-list
+          variable: upload
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - image
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: 请选择合同审查主体
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: Apart
+        - label: 工作领域
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: workfield
+        - label: 合同审查要点
+          max_length: 4096
+          options: []
+          required: true
+          type: paragraph
+          variable: attention
+      height: 168
+      id: '1740449748004'
+      position:
+        x: 30
+        y: 283.5
+      positionAbsolute:
+        x: 30
+        y: 283.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_array_file: true
+        selected: false
+        title: 文档提取器
+        type: document-extractor
+        variable_selector:
+        - '1740449748004'
+        - upload
+      height: 92
+      id: '1740449932117'
+      position:
+        x: 638
+        y: 283.5
+      positionAbsolute:
+        x: 638
+        y: 283.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1740449932117'
+          - text
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: 0a0ee45c-1b2c-4703-8f02-d1508755ded5
+          role: system
+          text: " ## Role: \n律师（{{#1740449748004.workfield#}}）\n \n## Profile:\n-\
+            \ language: 中文\n- description: 你是一个律师，以{{#1740449748004.Apart#}}利益最大化为原则，对{{#context#}}进行审查分析,\
+            \ 给出评分和改进建议，帮助用户改进和完善合同。\n \n## Goals:\n- 对输入的合同文本审查分析后，指出合同的问题和存在的风险\n\
+            - 对于改进和完善合同，给出建议\n- 根据建议，修改具体的条款\n- 给提供专业的法律服务\n\n \n## Constrains:\n\
+            - 要依据正在适用的法律，不能引用废止的法律条文\n- 合同条款约定应当符合最新法律法规及相关政策要求\n- 专用名称地点应当准确\n- 要结合建筑工程的行业，不能随意\n\
+            - 要结合{{#1740449748004.Apart#}}的要求，站在{{#1740449748004.Apart#}}的立场\n- 要做出有利于{{#1740449748004.Apart#}}的条款\n\
+            - 对于{{#1740449748004.Apart#}}不利的条款，要及时指出\n- 对于显著偏向于{{#1740449748004.Apart#}}的不公平条款，需要与对方充分协商\n\
+            \ \n## Skills:\n- 熟悉中国的法律，并能熟练引用法律\n- 法律专业技能非常强，熟悉诉讼的程序和流程\n- 经验非常丰富，擅长处理各种纠纷\n\
+            - 对于建筑行业非常了解\n- 团队配合能力强，组织团队为{{#1740449748004.upload#}}服务\n- 熟练使用各种软件，效率非常高\n\
+            \ \n## attention\n{{#1740449748004.attention#}}\n\n## example\n该份合同存在的问题：\n\
+            -1.\n-2.\n对客户不利的条款：\n-1. { }；解释原因：\n-2. { }；解释原因：\n \n修改的建议：\n-1.\n-2.\n\
+            -3.\n-4.\nN\n \n \n修改的具体条款：\n-将“xxx条款”修改为“ ”\n-将“xxx条款”修改为“ ”\n-将“xxx条款”修改为“\
+            \ ”\n \n \n## output format：\n该份合同存在的问题：\n-1.\n-2.\n对客户不利的条款：\n-1. { }；解释原因：\n\
+            -2. { }；解释原因：\n \n修改的建议：\n-1.\n-2.\n-3.\n-4.\nN\n \n \n修改的具体条款：\n-将“xxx条款”修改为“\
+            \ ”\n-将“xxx条款”修改为“ ”\n-将“xxx条款”修改为“ ”\n \n "
+        - id: db34e3b5-fccc-497a-ae76-fc5162bb113a
+          role: user
+          text: ''
+        selected: false
+        title: 合同审查LLM
+        type: llm
+        variables: []
+        vision:
+          configs:
+            detail: high
+            variable_selector:
+            - '17404498426540'
+            - last_record
+          enabled: false
+      height: 90
+      id: '1740449990918'
+      position:
+        x: 914.2088396274389
+        y: 153.16904101143757
+      positionAbsolute:
+        x: 914.2088396274389
+        y: 153.16904101143757
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1740449990918'
+          - text
+          variable: 审查意见
+        - value_selector:
+          - '1745993987784'
+          - result
+          variable: DOCX
+        selected: false
+        title: 结束
+        type: end
+      height: 116
+      id: '1740550550848'
+      position:
+        x: 2165.9516743025824
+        y: 365.3126975940954
+      positionAbsolute:
+        x: 2165.9516743025824
+        y: 365.3126975940954
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1740449748004'
+          - attention
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-r1:8b
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: 23057863-f112-4828-a650-6eb196856028
+          role: system
+          text: '{{#1740449748004.attention#}}将用户的要求细化为合同审查要点，并输出为提示词中的attention段'
+        selected: false
+        title: 合同审查要点生成
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1743587468289'
+      position:
+        x: 334
+        y: 283.5
+      positionAbsolute:
+        x: 334
+        y: 283.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: markdown格式文本
+            ja_JP: markdown格式文本
+            pt_BR: markdown格式文本
+            zh_Hans: markdown格式文本
+          label:
+            en_US: llm_r
+            ja_JP: llm_r
+            pt_BR: llm_r
+            zh_Hans: llm_r
+          llm_description: markdown格式文本
+          max: null
+          min: null
+          name: llm_r
+          options: []
+          placeholder:
+            en_US: ''
+            ja_JP: ''
+            pt_BR: ''
+            zh_Hans: ''
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        params:
+          llm_r: ''
+        provider_id: 967e38d6-2676-4c49-a86e-0dce36aa7f13
+        provider_name: markdown2docx
+        provider_type: workflow
+        selected: false
+        title: markdown2docx
+        tool_configurations: {}
+        tool_label: markdown2docx
+        tool_name: markdown2docxtool
+        tool_parameters:
+          llm_r:
+            type: mixed
+            value: '{{#1740449990918.text#}}'
+        type: tool
+      height: 54
+      id: '1745993641908'
+      position:
+        x: 1226.9298861465043
+        y: 153.16904101143757
+      positionAbsolute:
+        x: 1226.9298861465043
+        y: 153.16904101143757
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "\ndef main(json_string: str) -> dict:\n    result_uri = \"\"\n    try:\n\
+          \        # 1. 解析外层JSON字符串\n        outer_data = json.loads(json_string)\n\
+          \n        # 2. 获取 'body' 键的值（这应该是一个字符串）\n        # 使用 .get() 方法可以避免在 'body'\
+          \ 键不存在时引发 KeyError\n        body_string = outer_data.get('body')\n\n   \
+          \     if body_string is None:\n            result_uri = \"错误：在外层JSON中未找到\
+          \ 'body' 键。\"\n            return {\n                \"result\": result_uri,\n\
+          \            }\n\n        # 确保 body_string 是一个字符串\n        if not isinstance(body_string,\
+          \ str):            \n            result_uri = \"错误：'body' 的值不是字符串\"\n  \
+          \          return {\n                \"result\": result_uri,\n         \
+          \   }\n\n        # 3. 解析内层JSON字符串（来自 'body' 的值）\n        inner_data = json.loads(body_string)\n\
+          \n        # 4. 获取 'download_url' 键的值\n        # 使用 .get() 方法可以避免在 'download_url'\
+          \ 键不存在时引发 KeyError\n        download_url = inner_data.get('download_url')\n\
+          \n        if download_url is None:\n            result_uri = \"错误：在内层JSON\
+          \ (body) 中未找到 'download_url' 键。\"\n            return {\n              \
+          \  \"result\": result_uri,\n            }\n\n    except json.JSONDecodeError\
+          \ as e:\n        # 处理JSON解析错误（外层或内层）\n        \n        result_uri = f\"\
+          错误：解析JSON时出错 - {e}\"\n        return {\n            \"result\": result_uri,\n\
+          \        }\n    except Exception as e:\n        # 捕获任何其他意外错\n        result_uri\
+          \ = f\"发生意外错误：{e}\"\n        return {\n            \"result\": result_uri,\n\
+          \        }\n\n    return {\n        \"result\": download_url,\n    }\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: 代码执行
+        type: code
+        variables:
+        - value_selector:
+          - '1745993641908'
+          - text
+          variable: json_string
+      height: 54
+      id: '1745993987784'
+      position:
+        x: 1717.9516743025822
+        y: 189.31269759409543
+      positionAbsolute:
+        x: 1717.9516743025822
+        y: 189.31269759409543
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 368.7926336558784
+      y: 411.6800777905671
+      zoom: 0.25
